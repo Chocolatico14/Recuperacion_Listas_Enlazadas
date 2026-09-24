@@ -361,6 +361,55 @@ class Tren:
 
 #Punto 2
 
+def fusionar_segmentos(lista):
+
+    if lista.head is None:
+        return None
+
+    current = lista.head
+    suma = 0
+
+    nuevo_head = None
+    ultimo = None
+
+    while current is not None:
+
+        if current.value != 0:
+            suma += current.value
+
+        else:
+            if suma > 0:
+                current.value = suma
+
+                if nuevo_head is None:
+                    nuevo_head = current
+
+                if ultimo is not None:
+                    ultimo.next = current
+                    current.prev = ultimo
+
+                ultimo = current
+                suma = 0
+
+        current = current.next
+
+    if ultimo is not None:
+        ultimo.next = None
+        lista.tail = ultimo
+
+    lista.head = nuevo_head
+
+    return lista
+
+
+#Punto 3
+
+
+
+   
+
+            
+            
             
     
         
