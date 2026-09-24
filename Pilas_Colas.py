@@ -423,30 +423,33 @@ def postfija(s):
             stack.push(result)
 
     return stack.pop()
-
-# PRINTS
+print("PUNTO 1")
 
 router = Router(3)
 
 print(router.addPacket(1, 10, 100))
 print(router.addPacket(2, 20, 200))
 print(router.addPacket(3, 10, 300))
-
 print(router.addPacket(1, 10, 100))
-
 print(router.getCount(10, 50, 350))
+print(router.forwardPacket())
+print(router.forwardPacket())
+print(router.forwardPacket())
+print(router.forwardPacket())
 
-print(f"Forwarded packet  punto 1: {router.forwardPacket()}")
-print(f"Forwarded packe  punto 1: {router.forwardPacket()}")
-print(f"Forwarded packet  punto 1: {router.forwardPacket()}")
-print(f"Forwarded packet punto 1: {router.forwardPacket()}")
+router = Router(3)
 
-# PRINTS 2
+router.addPacket(1, 10, 100)
+router.addPacket(2, 20, 200)
+router.addPacket(3, 10, 300)
+router.addPacket(4, 30, 400)
+
+print("PUNTO 2")
 
 editor = Editor()
 
 editor.append("abc")
-print(f"punto 2: {editor.get_text()}")
+print(editor.get_text())
 
 editor.append("xy")
 print(editor.get_text())
@@ -466,14 +469,19 @@ editor.print_char(5)
 editor.undo()
 print(editor.get_text())
 
-# PRINTS 3
+print("PUNTO 3")
 
 students = [1, 1, 0, 0]
 sandwiches = [0, 1, 0, 1]
 
-print(f"punto 3: {cafeteria(students, sandwiches)}")
+print(cafeteria(students, sandwiches))
 
-# PRINTS 4
+students = [1, 1, 1]
+sandwiches = [0, 0, 0]
 
-print(f"punto 4: {postfija('43+')}")
-print(f"punto 4: {postfija('35x83+-')}")
+print(cafeteria(students, sandwiches))
+
+print("PUNTO 4")
+
+print(postfija("43+"))
+print(postfija("35x83+-"))
