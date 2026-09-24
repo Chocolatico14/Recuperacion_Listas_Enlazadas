@@ -274,3 +274,206 @@ class Stack:
 
   def len(self):
     return self.__s.size
+
+class Router:
+
+    def __init__(self, memoryLimit):
+        self.__memoryLimit = memoryLimit
+        self.__packets = Queue()
+
+    def addPacket(self, source, destination, timestamp):
+
+        temp = Queue()
+        duplicate = False
+
+        while not self.__packets.is_empty():
+            packet = self.__packets.dequeue()
+
+            if packet[0] == source and packet[1] == destination and packet[2] == timestamp:
+                duplicate = True
+
+            temp.enqueue(packet)
+
+        self.__packets = temp
+
+        if duplicate:
+            return False
+
+        if self.__packets.len() >= self.__memoryLimit:
+            self.__packets.dequeue()
+
+        self.__packets.enqueue((source, destination, timestamp))
+
+        return True
+
+    def forwardPacket(self):
+
+        if self.__packets.is_empty():
+            return []
+
+        packet = self.__packets.dequeue()
+
+        return [packet[0], packet[1], packet[2]]
+
+    def getCount(self, destination, startTime, endTime):
+
+        temp = Queue()
+        count = 0
+
+        while not self.__packets.is_empty():
+            packet = self.__packets.dequeue()
+
+            if packet[1] == destination and startTime <= packet[2] <= endTime:
+                count += 1
+
+            temp.enqueue(packet)
+
+        self.__packets = temp
+
+        return count
+
+# 2
+
+class Editor:
+
+    def __init__(self):
+        self.__text = ""
+        self.__history = Stack()
+
+    def append(self, string):
+
+        self.__history.push(self.__text)
+        self.__text += string
+
+    def delete(self, k):
+
+        self.__history.push(self.__text)
+        self.__text = self.__text[:-k]
+
+    def print_char(self, k):
+
+        print(self.__text[k - 1])
+
+    def undo(self):
+
+        if not self.__history.is_empty():
+            self.__text = self.__history.pop()
+
+    def get_text(self):
+
+        return self.__text
+# 3
+
+def cafeteria(students, sandwiches):
+
+    queue = Queue()
+    stack = Stack()
+
+    for student in students:
+        queue.enqueue((student, 0))
+
+    for sandwich in reversed(sandwiches):
+        stack.push(sandwich)
+
+    while not queue.is_empty() and not stack.is_empty():
+
+        student = queue.dequeue()
+        preference = student[0]
+        retries = student[1]
+
+        if preference == stack.top():
+            stack.pop()
+
+        else:
+            if retries < 2:
+                queue.enqueue((preference, retries + 1))
+
+    return queue.len(), stack.len()
+
+# 4
+
+def postfija(s):
+
+    stack = Stack()
+
+    for character in s:
+
+        if character.isdigit():
+            stack.push(int(character))
+
+        else:
+            second = stack.pop()
+            first = stack.pop()
+
+            if character == "+":
+                result = first + second
+
+            elif character == "-":
+                result = first - second
+
+            elif character == "x":
+                result = first * second
+
+            elif character == "*":
+                result = first * second
+
+            elif character == "/":
+                result = first / second
+
+            stack.push(result)
+
+    return stack.pop()
+
+# PRINTS
+
+router = Router(3)
+
+print(router.addPacket(1, 10, 100))
+print(router.addPacket(2, 20, 200))
+print(router.addPacket(3, 10, 300))
+
+print(router.addPacket(1, 10, 100))
+
+print(router.getCount(10, 50, 350))
+
+print(router.forwardPacket())
+print(router.forwardPacket())
+print(router.forwardPacket())
+print(router.forwardPacket())
+
+# PRINTS 2
+
+editor = Editor()
+
+editor.append("abc")
+print(editor.get_text())
+
+editor.append("xy")
+print(editor.get_text())
+
+editor.print_char(4)
+
+editor.delete(3)
+print(editor.get_text())
+
+editor.print_char(2)
+
+editor.undo()
+print(editor.get_text())
+
+editor.print_char(5)
+
+editor.undo()
+print(editor.get_text())
+
+# PRINTS 3
+
+students = [1, 1, 0, 0]
+sandwiches = [0, 1, 0, 1]
+
+print(cafeteria(students, sandwiches))
+
+# PRINTS 4
+
+print(postfija("43+"))
+print(postfija("35x83+-"))
