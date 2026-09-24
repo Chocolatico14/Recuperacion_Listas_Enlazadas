@@ -404,6 +404,44 @@ def fusionar_segmentos(lista):
 
 #Punto 3
 
+def eliminar_duplicados(lista):
+    if lista.head is None:
+        return None
+    
+    current = lista.head
+
+    while current is not None:
+
+        siguiente = current.next
+        buscador = current.next
+        repetido = False
+
+        while buscador is not None:
+
+            if buscador.value == current.value:
+                repetido = True
+                break
+
+            buscador = buscador.next
+
+        if repetido:
+
+            if current.prev is not None:
+                current.prev.next = current.next
+
+            if current.next is not None:
+                current.next.prev = current.prev
+
+            if current == lista.head:
+                lista.head = current.next
+
+            if current == lista.tail:
+                lista.tail = current.prev
+
+        current = siguiente
+
+    return lista
+        
 
 
    
