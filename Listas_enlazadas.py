@@ -441,6 +441,39 @@ def eliminar_duplicados(lista):
         current = siguiente
 
     return lista
+
+#Punto 4
+
+def rotar_maximo(lista):
+
+    if lista.head is None:
+        return None
+
+    maximo = lista.head
+    current = lista.head.next
+
+    while current is not None:
+        if current.value > maximo.value:
+            maximo = current
+        current = current.next
+
+    if maximo == lista.head:
+        return lista
+
+    anterior = maximo.prev
+    vieja_head = lista.head
+
+    anterior.next = None
+    maximo.prev = None
+
+    lista.tail.next = vieja_head
+    vieja_head.prev = lista.tail
+
+    lista.head = maximo
+    lista.tail = anterior
+
+    return lista
+        
         
 
 
