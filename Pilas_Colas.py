@@ -436,17 +436,17 @@ print(router.addPacket(1, 10, 100))
 
 print(router.getCount(10, 50, 350))
 
-print(router.forwardPacket())
-print(router.forwardPacket())
-print(router.forwardPacket())
-print(router.forwardPacket())
+print(f"Forwarded packet  punto 1: {router.forwardPacket()}")
+print(f"Forwarded packe  punto 1: {router.forwardPacket()}")
+print(f"Forwarded packet  punto 1: {router.forwardPacket()}")
+print(f"Forwarded packet punto 1: {router.forwardPacket()}")
 
 # PRINTS 2
 
 editor = Editor()
 
 editor.append("abc")
-print(editor.get_text())
+print(f"punto 2: {editor.get_text()}")
 
 editor.append("xy")
 print(editor.get_text())
@@ -471,9 +471,9 @@ print(editor.get_text())
 students = [1, 1, 0, 0]
 sandwiches = [0, 1, 0, 1]
 
-print(cafeteria(students, sandwiches))
+print(f"punto 3: {cafeteria(students, sandwiches)}")
 
 # PRINTS 4
 
-print(postfija("43+"))
-print(postfija("35x83+-"))
+print(f"punto 4: {postfija('43+')}")
+print(f"punto 4: {postfija('35x83+-')}")
