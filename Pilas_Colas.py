@@ -274,122 +274,142 @@ class Stack:
 
   def len(self):
     return self.__s.size
+class Paquete:
+
+    def __init__(self, source: int, destination: int, timestamp: int) -> None:
+        self.source: int = source
+        self.destination: int = destination
+        self.timestamp: int = timestamp
+
+    def __str__(self) -> str:
+        return f"({self.source},{self.destination},{self.timestamp})"
+
 
 class Router:
 
-    def __init__(self, memoryLimit):
-        self.__memoryLimit = memoryLimit
-        self.__packets = Queue()
+    def __init__(self, limiteMemoria: int):
+        self.limiteMemoria: int = limiteMemoria
+        self.cola: Queue = Queue()
 
-    def addPacket(self, source, destination, timestamp):
+    def agregarPaquete(self, source: int, destination: int, timestamp: int) -> bool:
+        nuevo: Paquete = Paquete(source, destination, timestamp)
+        n: int = self.cola.len()
+        encontrado: bool = False
+        contador: int = 0
 
-        temp = Queue()
-        duplicate = False
+        while contador < n:
 
-        while not self.__packets.is_empty():
-            packet = self.__packets.dequeue()
+            actual: Paquete = self.cola.dequeue()
 
-            if packet[0] == source and packet[1] == destination and packet[2] == timestamp:
-                duplicate = True
+            if actual.source == nuevo.source and actual.destination == nuevo.destination and actual.timestamp == nuevo.timestamp:
+                encontrado = True
 
-            temp.enqueue(packet)
+            self.cola.enqueue(actual)
+            contador += 1
 
-        self.__packets = temp
-
-        if duplicate:
+        if encontrado:
             return False
 
-        if self.__packets.len() >= self.__memoryLimit:
-            self.__packets.dequeue()
+        if self.cola.len() >= self.limiteMemoria:
+            self.cola.dequeue()
 
-        self.__packets.enqueue((source, destination, timestamp))
+        self.cola.enqueue(nuevo)
 
         return True
 
-    def forwardPacket(self):
-
-        if self.__packets.is_empty():
+    def reenviarPaquete(self) -> list[int]:
+        if self.cola.is_empty():
             return []
 
-        packet = self.__packets.dequeue()
+        paquete: Paquete = self.cola.dequeue()
 
-        return [packet[0], packet[1], packet[2]]
+        return [paquete.source, paquete.destination, paquete.timestamp]
 
-    def getCount(self, destination, startTime, endTime):
+    def contarPaquetes(self, destination: int, startTime: int, endTime: int) -> int:
+        n: int = self.cola.len()
+        contador: int = 0
+        total: int = 0
 
-        temp = Queue()
-        count = 0
+        while contador < n:
 
-        while not self.__packets.is_empty():
-            packet = self.__packets.dequeue()
+            actual: Paquete = self.cola.dequeue()
 
-            if packet[1] == destination and startTime <= packet[2] <= endTime:
-                count += 1
+            if actual.destination == destination and startTime <= actual.timestamp <= endTime:
+                total += 1
 
-            temp.enqueue(packet)
+            self.cola.enqueue(actual)
+            contador += 1
 
-        self.__packets = temp
-
-        return count
-
+        return total
 # 2
+
+class Operacion:
+
+    def __init__(self, tipo: str, valor: str) -> None:
+        self.tipo: str = tipo
+        self.valor: str = valor
+
 
 class Editor:
 
     def __init__(self):
-        self.__text = ""
-        self.__history = Stack()
+        self.texto: str = ""
+        self.pila: Stack = Stack()
 
-    def append(self, string):
+    def agregarTexto(self, texto: str) -> None:
+        operacion: Operacion = Operacion("append", self.texto)
+        self.pila.push(operacion)
 
-        self.__history.push(self.__text)
-        self.__text += string
+        self.texto += texto
 
-    def delete(self, k):
+    def eliminarTexto(self, cantidad: int) -> None:
+        operacion: Operacion = Operacion("delete", self.texto)
+        self.pila.push(operacion)
 
-        self.__history.push(self.__text)
-        self.__text = self.__text[:-k]
+        self.texto = self.texto[:-cantidad]
 
-    def print_char(self, k):
+    def imprimirCaracter(self, posicion: int) -> None:
+        print(self.texto[posicion - 1])
 
-        print(self.__text[k - 1])
-
-    def undo(self):
-
-        if not self.__history.is_empty():
-            self.__text = self.__history.pop()
-
-    def get_text(self):
-
-        return self.__text
+    def deshacer(self) -> None:
+        if not self.pila.is_empty():
+            operacion: Operacion = self.pila.pop()
+            self.texto = operacion.valor
 # 3
 
-def cafeteria(students, sandwiches):
+class Estudiante:
 
-    queue = Queue()
-    stack = Stack()
+    def __init__(self, preferencia: int, intentosRestantes: int) -> None:
+        self.preferencia: int = preferencia
+        self.intentosRestantes: int = intentosRestantes
 
-    for student in students:
-        queue.enqueue((student, 0))
+def simularCafeteria(students: list[int], sandwiches: list[int]) -> tuple[int, int]:
+
+    cola = Queue()
+    pila = Stack()
+
+    for pref in students:
+        cola.enqueue(Estudiante)(pref, 2)
 
     for sandwich in reversed(sandwiches):
-        stack.push(sandwich)
+        pila.push(sandwich)
 
-    while not queue.is_empty() and not stack.is_empty():
+    noComieron = 0
 
-        student = queue.dequeue()
-        preference = student[0]
-        retries = student[1]
-
-        if preference == stack.top():
-            stack.pop()
-
+    while not cola.is_empty() and not pila.is_empty():
+        estudiante = cola.dequeue()
+        if estudiante.preferencia == pila.top():
+            pila.pop()
         else:
-            if retries < 2:
-                queue.enqueue((preference, retries + 1))
+            estudiante.intentosRestantes -= 1
+            if estudiante.intentosRestantes > 0:
+                cola.enqueue(estudiante)
+            else:
+                noComieron += 1
 
-    return queue.len(), stack.len()
+    noComieron += cola.len()
 
+    return noComieron, pila.len()
 # 4
 
 def postfija(s):
