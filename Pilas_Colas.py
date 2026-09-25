@@ -274,6 +274,8 @@ class Stack:
 
   def len(self):
     return self.__s.size
+
+# Punto 1
 class Paquete:
 
     def __init__(self, source: int, destination: int, timestamp: int) -> None:
@@ -353,7 +355,7 @@ class Operacion:
 class Editor:
 
     def __init__(self):
-        self.texto: str = ""
+        self.texto: str = "" 
         self.pila: Stack = Stack()
 
     def agregarTexto(self, texto: str) -> None:
@@ -365,10 +367,9 @@ class Editor:
     def eliminarTexto(self, cantidad: int) -> None:
         operacion: Operacion = Operacion("delete", self.texto)
         self.pila.push(operacion)
+        self.texto = self.texto[:-cantidad] 
 
-        self.texto = self.texto[:-cantidad]
-
-    def imprimirCaracter(self, posicion: int) -> None:
+    def imprimirCaracter(self, posicion: int) -> None: 
         print(self.texto[posicion - 1])
 
     def deshacer(self) -> None:
@@ -432,9 +433,6 @@ def postfija(s):
                 result = first - second
 
             elif character == "x":
-                result = first * second
-
-            elif character == "*":
                 result = first * second
 
             elif character == "/":
