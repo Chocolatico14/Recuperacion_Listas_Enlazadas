@@ -269,18 +269,18 @@ class Tren:
             self.vagon_actual = self.lista.head
             return
 
-        nuevo_nodo = NodeD(nuevo_vagon)
-        nodo_siguiente = self.vagon_actual.next
+        nuevo_nodo = NodeD(nuevo_vagon) 
+        nodo_siguiente = self.vagon_actual.next # C (porque no hemos guardado todavia X)
 
-        nuevo_nodo.prev = self.vagon_actual
-        nuevo_nodo.next = nodo_siguiente
+        nuevo_nodo.prev = self.vagon_actual  # B
+        nuevo_nodo.next = nodo_siguiente # C
 
-        self.vagon_actual.next = nuevo_nodo
+        self.vagon_actual.next = nuevo_nodo # X
 
         if nodo_siguiente is not None:
-            nodo_siguiente.prev = nuevo_nodo
+            nodo_siguiente.prev = nuevo_nodo # X
         else:
-            self.lista.tail = nuevo_nodo
+            self.lista.tail = nuevo_nodo # X LA COLA DEL TREN PORQUE NO HAY SIGUIENTE
 
         self.lista.size += 1
         print(f"Vagon {nuevo_vagon} acoplado correctamente")
@@ -290,26 +290,26 @@ class Tren:
             print("El tren esta vacio")
             return None
 
-        nodo_eliminar = self.vagon_actual
-        siguiente_nodo = self.vagon_actual.next
-        nodo_anterior = self.vagon_actual.prev
+        nodo_eliminar = self.vagon_actual  # B
+        siguiente_nodo = self.vagon_actual.next # C
+        nodo_anterior = self.vagon_actual.prev # A
 
         if nodo_anterior:
-            nodo_anterior.next = siguiente_nodo
+            nodo_anterior.next = siguiente_nodo # A - C
         else:
-            self.lista.head = siguiente_nodo
+            self.lista.head = siguiente_nodo # C seria la cabeza
 
         if siguiente_nodo:
-            siguiente_nodo.prev = nodo_anterior
+            siguiente_nodo.prev = nodo_anterior # C TIRANDO A 
         else:
             self.lista.tail = nodo_anterior
 
         self.lista.size -= 1
 
         if siguiente_nodo:
-            self.vagon_actual = siguiente_nodo
+            self.vagon_actual = siguiente_nodo # C seria el actual
         elif nodo_anterior:
-            self.vagon_actual = nodo_anterior
+            self.vagon_actual = nodo_anterior # A seria el actual
         else:
             self.vagon_actual = None
 
@@ -321,10 +321,10 @@ class Tren:
 
         nodo = self.vagon_actual
 
-        if nodo.prev:
-            nodo.prev.next = nodo.next
-        if nodo.next:
-            nodo.next.prev = nodo.prev
+        if nodo.prev: # B
+            nodo.prev.next = nodo.next # C
+        if nodo.next: # D
+            nodo.next.prev = nodo.prev # C 
         else:
             self.lista.tail = nodo.prev
 
@@ -340,11 +340,11 @@ class Tren:
         nodo = self.vagon_actual
 
         if nodo.next:
-            nodo.next.prev = nodo.prev
+            nodo.next.prev = nodo.prev # C - A
         if nodo.prev:
-            nodo.prev.next = nodo.next
+            nodo.prev.next = nodo.next # A - C
         else:
-            self.lista.head = nodo.next
+            self.lista.head = nodo.next 
 
         nodo.next = None
         nodo.prev = self.lista.tail
@@ -424,18 +424,18 @@ def eliminar_duplicados(lista):
 
             buscador = buscador.next
 
-        if repetido:
+        if repetido: #AQUI EL REPETIDO ES B.. entonces..
 
-            if current.prev is not None:
-                current.prev.next = current.next
+            if current.prev is not None: # B is not none
+                current.prev.next = current.next # A - C
 
-            if current.next is not None:
-                current.next.prev = current.prev
+            if current.next is not None: # B is not none
+                current.next.prev = current.prev # C - A
 
-            if current == lista.head:
+            if current == lista.head: # si era la cabeza el duplicado, se pone en el siguiente
                 lista.head = current.next
 
-            if current == lista.tail:
+            if current == lista.tail: # lo mismo
                 lista.tail = current.prev
 
         current = siguiente
@@ -449,11 +449,11 @@ def rotar_maximo(lista):
     if lista.head is None:
         return None
 
-    maximo = lista.head
-    current = lista.head.next
+    maximo = lista.head # 4 maximo
+    current = lista.head.next # 8 current
 
     while current is not None:
-        if current.value > maximo.value:
+        if current.value > maximo.value: # 4 y 8, maximo 8 y luego 8-10, maximo 10
             maximo = current
         current = current.next
 
@@ -464,22 +464,183 @@ def rotar_maximo(lista):
     vieja_head = lista.head
 
     anterior.next = None
-    maximo.prev = None
+    maximo.prev = None # se rompe la conexion
 
-    lista.tail.next = vieja_head
-    vieja_head.prev = lista.tail
+    lista.tail.next = vieja_head # 4 y 5
+    vieja_head.prev = lista.tail # 5 y 4 
 
-    lista.head = maximo
-    lista.tail = anterior
+    lista.head = maximo # 10 head
+    lista.tail = anterior # 5 tail
 
     return lista
         
-        
+# ============================================================
+# PRUEBAS PUNTO 1
+# ============================================================
+
+print("\n========== PUNTO 1 - CASO 1 ==========")
+
+tren1 = Tren("A")
+tren1.acomplar_vagon("B")
+tren1.acomplar_vagon("C")
+
+print(tren1)
+
+tren1.mover_siguiente()
+print(tren1)
+
+tren1.acomplar_vagon("X")
+print(tren1)
+
+tren1.mover_anterior()
+print(tren1)
+
+tren1.desacoplar_vagon_actual()
+print(tren1)
 
 
-   
+print("\n========== PUNTO 1 - CASO 2 ==========")
 
-            
+tren2 = Tren("1")
+tren2.acomplar_vagon("2")
+tren2.acomplar_vagon("3")
+tren2.acomplar_vagon("4")
+
+print(tren2)
+
+tren2.mover_siguiente()
+tren2.mover_siguiente()
+
+print(tren2)
+
+tren2.vagon_inicio()
+print(tren2)
+
+tren2.mover_siguiente()
+tren2.vagon_final()
+print(tren2)
+
+
+# ============================================================
+# PRUEBAS PUNTO 2
+# ============================================================
+
+print("\n========== PUNTO 2 - CASO 1 ==========")
+
+lista1 = dlinkedlist()
+
+lista1.append(2)
+lista1.append(3)
+lista1.append(0)
+lista1.append(5)
+lista1.append(4)
+lista1.append(0)
+lista1.append(7)
+
+print("Antes:", lista1)
+
+fusionar_segmentos(lista1)
+
+print("Despues:", lista1)
+
+
+print("\n========== PUNTO 2 - CASO 2 ==========")
+
+lista2 = dlinkedlist()
+
+lista2.append(10)
+lista2.append(5)
+lista2.append(0)
+lista2.append(1)
+lista2.append(2)
+lista2.append(3)
+lista2.append(0)
+lista2.append(8)
+lista2.append(2)
+
+print("Antes:", lista2)
+
+fusionar_segmentos(lista2)
+
+print("Despues:", lista2)
+
+
+# ============================================================
+# PRUEBAS PUNTO 3
+# ============================================================
+
+print("\n========== PUNTO 3 - CASO 1 ==========")
+
+lista3 = dlinkedlist()
+
+lista3.append(4)
+lista3.append(7)
+lista3.append(4)
+lista3.append(9)
+lista3.append(7)
+
+print("Antes:", lista3)
+
+eliminar_duplicados(lista3)
+
+print("Despues:", lista3)
+
+
+print("\n========== PUNTO 3 - CASO 2 ==========")
+
+lista4 = dlinkedlist()
+
+lista4.append(5)
+lista4.append(2)
+lista4.append(8)
+lista4.append(5)
+lista4.append(2)
+lista4.append(10)
+lista4.append(8)
+
+print("Antes:", lista4)
+
+eliminar_duplicados(lista4)
+
+print("Despues:", lista4)
+
+
+# ============================================================
+# PRUEBAS PUNTO 4
+# ============================================================
+
+print("\n========== PUNTO 4 - CASO 1 ==========")
+
+lista5 = dlinkedlist()
+
+lista5.append(4)
+lista5.append(8)
+lista5.append(2)
+lista5.append(10)
+lista5.append(5)
+
+print("Antes:", lista5)
+
+rotar_maximo(lista5)
+
+print("Despues:", lista5)
+
+
+print("\n========== PUNTO 4 - CASO 2 ==========")
+
+lista6 = dlinkedlist()
+
+lista6.append(7)
+lista6.append(3)
+lista6.append(15)
+lista6.append(6)
+lista6.append(9)
+
+print("Antes:", lista6)
+
+rotar_maximo(lista6)
+
+print("Despues:", lista6)
             
             
     

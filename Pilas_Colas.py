@@ -494,12 +494,12 @@ print("PUNTO 3")
 students = [1, 1, 0, 0]
 sandwiches = [0, 1, 0, 1]
 
-print(cafeteria(students, sandwiches))
+print(simularCafeteria(students, sandwiches))
 
 students = [1, 1, 1]
 sandwiches = [0, 0, 0]
 
-print(cafeteria(students, sandwiches))
+print(simularCafeteria(students, sandwiches))
 
 print("PUNTO 4")
 
